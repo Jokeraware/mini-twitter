@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie'
+import { useSetAtom } from 'jotai';
+import { setUser, tokenAtom, usernameAtom } from '../atoms/atom';
+
 
 function LogIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const setToken = useSetAtom(tokenAtom);
+    const setUsername = useSetAtom(usernameAtom);
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -23,7 +27,10 @@ function LogIn() {
             .then(response => response.json())
             .then(data => {
                 Cookies.get('token', data.jwt);
+                setToken(data.jwt);
+                setUsername(data.username);
                 console.log(data);
+                console.log(data.user.username);
             })
             .catch(error => {
                 console.error('Erreur lors de la soumission du formulaire :', error);

@@ -1,31 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { useAtom } from 'jotai';
+import { tokenAtom, usernameAtom } from '../../atoms/atom'
 
 function Profil() {
-    const [username, setUsername] = useState(null);
+    const [username, setUsername] = useAtom(usernameAtom);
+    const token = Cookies.get('token');
+
 
     useEffect(() => {
 
-        const token = Cookies.get('token');
+        // const token = Cookies.get('token');
 
-        fetch('http://localhost:1337/api/users/me', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            // body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                setUsername(data.username);
-                console.log(data);
+        if (token) {
+            fetch('http://localhost:1337/api/users/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
             })
-            .catch(error => {
-                console.error('Erreur lors de la soumission du formulaire :', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    
+                    setUsername(data.username);
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la soumission du formulaire :', error);
+                });
 
-    })
+        }
+    }, [token, setUsername]);
 
     return (
         <div>

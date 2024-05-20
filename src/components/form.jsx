@@ -24,7 +24,9 @@ function Form() {
         })
             .then(response => response.json())
             .then(data => {
+                if (data.jwt) {
                 Cookies.set('token', data.jwt);
+                }
                 console.log(data);
             })
             .catch(error => {
