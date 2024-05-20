@@ -9,6 +9,7 @@ function LogIn() {
     const [password, setPassword] = useState('');
     const setToken = useSetAtom(tokenAtom);
     const setUsername = useSetAtom(usernameAtom);
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -26,7 +27,7 @@ function LogIn() {
         })
             .then(response => response.json())
             .then(data => {
-                Cookies.get('token', data.jwt);
+                Cookies.set('token', data.jwt);
                 setToken(data.jwt);
                 setUsername(data.username);
                 console.log(data);
