@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie'
 import { useSetAtom } from 'jotai';
-import { setUser, tokenAtom, usernameAtom } from '../atoms/atom';
+import { tokenAtom, usernameAtom } from '../atoms/atom';
 
 
 function LogIn() {

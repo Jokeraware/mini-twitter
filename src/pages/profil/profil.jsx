@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useAtom } from 'jotai';
-import { tokenAtom, usernameAtom } from '../../atoms/atom'
+import { usernameAtom } from '../../atoms/atom'
 
 function Profil() {
     const [username, setUsername] = useAtom(usernameAtom);
