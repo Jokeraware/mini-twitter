@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie'
 import { useSetAtom } from 'jotai';
-import { tokenAtom, usernameAtom } from '../atoms/atom';
+import { tokenAtom, usernameAtom} from '../atoms/atom';
 
 
 function LogIn() {
-    const [email, setEmail] = useState('');
+    const [username, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const setToken = useSetAtom(tokenAtom);
     const setUsername = useSetAtom(usernameAtom);
@@ -14,7 +14,7 @@ function LogIn() {
         event.preventDefault();
 
         const data = {
-            identifier: email,
+            identifier: username,
             password: password
         };
 
@@ -27,11 +27,13 @@ function LogIn() {
         })
             .then(response => response.json())
             .then(data => {
-                Cookies.set('token', data.jwt);
+                Cookies.set('tokenUser',JSON.stringify({ token: data.jwt, username: data.user.username, id: data.user.id }));
                 setToken(data.jwt);
                 setUsername(data.username);
+
                 console.log(data);
                 console.log(data.user.username);
+          
             })
             .catch(error => {
                 console.error('Erreur lors de la soumission du formulaire :', error);
@@ -41,8 +43,8 @@ function LogIn() {
     return (
         <form onSubmit={handleSubmit}>
             <label>
-                Adresse e-mail:
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                nom:
+                <input type="text" value={username} onChange={e => setEmail(e.target.value)} />
             </label>
             <label>
                 Mot de passe:

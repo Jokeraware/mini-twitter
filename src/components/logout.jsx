@@ -6,11 +6,11 @@ import { tokenAtom, usernameAtom } from '../atoms/atom';
 
 const Logout = () => {
     const navigate = useNavigate();
-    const setToken = useSetAtom(tokenAtom)
+    const setToken = useSetAtom(tokenAtom) // ceci va permettre de rez 
     const setUsername = useSetAtom(usernameAtom)
 
     const handleLogout = () => {
-        Cookies.remove('token');
+        Cookies.remove('tokenUser');
         setToken(null);
         setUsername(null);
         console.log('déco ok');

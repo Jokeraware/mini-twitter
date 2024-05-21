@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { useAtom } from 'jotai';
-import { usernameAtom } from '../../atoms/atom'
+import Edit from '../../components/editProfil';
+import { useAtomValue } from 'jotai';
+import { cookiesAtom } from '../../atoms/atom';
 
 function Profil() {
-    const [username, setUsername] = useAtom(usernameAtom);
-    const token = Cookies.get('token');
+
+    const cookies = useAtomValue(cookiesAtom )
+    const {token, username} = cookies; 
 
 
     useEffect(() => {
-
-        // const token = Cookies.get('token');
 
         if (token) {
             fetch('http://localhost:1337/api/users/me', {
@@ -22,8 +22,6 @@ function Profil() {
             })
                 .then(response => response.json())
                 .then(data => {
-                    
-                    setUsername(data.username);
                     console.log(data);
                 })
                 .catch(error => {
@@ -31,13 +29,14 @@ function Profil() {
                 });
 
         }
-    }, [token, setUsername]);
+    }, [token, username]);
 
     return (
         <div>
             {username ? (<h1>Bonjour, {username}!</h1>) : (<h1>Bonjour!</h1>)}
+           <Edit/>
         </div>
     );
 }
-
+ 
 export default Profil;
