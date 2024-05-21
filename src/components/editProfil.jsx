@@ -1,54 +1,56 @@
-import React, { useState } from "react";
-// import Cookies from 'js-cookie';
- import { usernameAtom } from '../atoms/atom';
-import { useAtomValue, useSetAtom } from "jotai";
-import { cookiesAtom } from '../atoms/atom';
-
+import React, { useState, useEffect } from "react";
+import { useSetAtom, useAtomValue } from "jotai";
+import { usernameAtom, cookiesAtom } from '../atoms/atom';
 
 function Edit() {
     const [isEditing, setIsEditing] = useState(false);
+    const [localUsername, setLocalUsername] = useState("");
     const setUsername = useSetAtom(usernameAtom);
+    const cookies = useAtomValue(cookiesAtom);
+    const { token, username } = cookies;
 
-    const cookies = useAtomValue(cookiesAtom );
-    const {token, username} = cookies; 
+    useEffect(() => {
+        if (isEditing) {
+            setLocalUsername(username);
+        }
+    }, [isEditing, username]);
 
-    // const token = Cookies.get('token')
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
 
-    if (isEditing) {
+        if (isEditing) {
+            const data = { username: localUsername };
 
-        const data = {
-            username: username,
-        };
-
-        fetch(`http://localhost:1337/api/users-permissions/users/me`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                setUsername(data.username);
+            fetch(`http://localhost:1337/api/users-permissions/users/me`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             })
-            .catch(error => {
-                console.error('Erreur lors de la soumission du formulaire :', error);
-            });
-
-    }
+                .then(response => response.json())
+                .then(data => {
+                    setUsername(data.username); // Mise à jour de l'atome `usernameAtom`
+                    setIsEditing(false);
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la soumission du formulaire :', error);
+                });
+        } else {
+            setIsEditing(true);
+        }
+    };
 
     return (
         <>
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                setIsEditing(!isEditing);
-            }}>
-
+            <form onSubmit={handleFormSubmit}>
                 <label>
                     User name:{" "}
                     {isEditing ? (
-                        <input value={username} onChange={(e) => { setUsername(e.target.value); }}
+                        <input
+                            value={localUsername}
+                            onChange={(e) => setLocalUsername(e.target.value)}
                         />
                     ) : (
                         <p>{username}</p>
@@ -57,7 +59,7 @@ function Edit() {
                 <button type="submit">{isEditing ? "Save" : "Edit"} Profil</button>
             </form>
         </>
-    )
+    );
 }
 
-export default Edit
+export default Edit;
